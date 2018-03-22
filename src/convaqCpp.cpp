@@ -59,7 +59,7 @@ DataFrame convaqCpp(
   }
 
   // sort by p-value
-  std::sort(results.begin(), results.end(), [](CNVR &a, CNVR &b) { return a.pvalue < b.pvalue; });
+  std::sort(results.begin(), results.end(), [](const CNVR &a, const CNVR &b) { return a.pvalue < b.pvalue; });
 
   if(qvalues) {
     std::vector<std::vector<int>> best(4);
@@ -127,6 +127,8 @@ DataFrame convaqCpp(
       }
       r.qvalue = (double)better / qvalues_rep;
     }
+    
+    std::sort(results.begin(), results.end(), [](const CNVR &a, const CNVR &b) { return a.qvalue < b.qvalue; });
   }
 
   // convert CNVR list to data frame
