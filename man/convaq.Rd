@@ -4,8 +4,27 @@
 \alias{convaq}
 \title{Perform CNV-based association study.}
 \usage{
-convaq(segments1, segments2, model, p.cutoff = 0.05, qvalues = FALSE,
-  qvalues.rep = 500, nthreads = NULL)
+convaq(segments1, segments2, model, qvalues = FALSE, qvalues.rep = 500,
+  nthreads = NULL, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL)
+}
+\arguments{
+\item{segments1}{Data frame of segments for group 1.}
+
+\item{segments2}{Data frame of segments for group 2.}
+
+\item{model}{Model type. Either "statistical" or "query".}
+
+\item{qvalues}{TRUE if q-values should be computed, FALSE otherwise.}
+
+\item{qvalues.rep}{Number of repetitions to use in q-value computation.}
+
+\item{nthreads}{Number of CPU threads to use.}
+
+\item{p.cutoff}{(query) P-value cutoff in statistical model.}
+
+\item{pred1}{(statistical) Predicate for group 1 in query model.}
+
+\item{pred2}{(statistical) Predicate for group 2 in query model.}
 }
 \description{
 Perform CNV-based association study.

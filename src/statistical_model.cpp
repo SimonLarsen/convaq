@@ -15,8 +15,8 @@ void statistical_model(const std::vector<Region> &regions, int npatients1, int n
       int neg2 = npatients2 - pos2;
 
       double pval = fisher_test(pos1, neg1, pos2, neg2);
-      if(pval < cutoff) {
-        result.emplace_back(r.chr, r.start, r.end, r.length, type, pval);
+      if(pval <= cutoff) {
+        result.emplace_back(i, r.chr, r.start, r.end, r.length, type, pval);
       }
     }
   }

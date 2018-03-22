@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 class Region {
 public:
@@ -19,6 +20,11 @@ public:
       length(length),
       state(state)
   {}
+  
+  double get_freq(size_t group, uint type) {
+    int count = std::accumulate(state[group][type].begin(), state[group][type].end(), 0);
+    return (double)count / state[0][0].size();
+  }
 };
 
 #endif

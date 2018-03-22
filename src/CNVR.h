@@ -6,6 +6,7 @@
 
 class CNVR {
 public:
+  uint region;
   std::string chr;
   int start;
   int end;
@@ -15,6 +16,7 @@ public:
   double qvalue;
 
   CNVR(
+    uint region,
     const std::string &chr,
     int start,
     int end,
@@ -23,7 +25,8 @@ public:
     double pvalue,
     double qvalue = 0
   )
-    : chr(chr),
+    : region(region),
+      chr(chr),
       start(start),
       end(end),
       length(length),

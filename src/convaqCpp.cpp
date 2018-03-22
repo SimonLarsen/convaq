@@ -6,6 +6,7 @@
 #include <utility>
 #include <random>
 #include <thread>
+#include <boost/format.hpp>
 #include "defines.h"
 #include "Segment.h"
 #include "Region.h"
@@ -13,18 +14,21 @@
 #include "df_to_segments.h"
 #include "get_regions.h"
 #include "statistical_model.h"
+#include "query_model.h"
 
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-DataFrame convaqCpp(
+List convaqCpp(
     DataFrame df1,
     DataFrame df2,
     uint model_num,
-    double cutoff,
     bool qvalues,
     uint qvalues_rep,
-    uint nthreads
+    uint nthreads,
+    double cutoff,
+    uint comp1, double value1, uint eq1, uint type1,
+    uint comp2, double value2, uint eq2, uint type2
 ) {
   if(nthreads == 0) nthreads = std::thread::hardware_concurrency();
 
@@ -56,6 +60,17 @@ DataFrame convaqCpp(
 
   if(model == MODEL_STAT) {
     statistical_model(regions, npatients1, npatients2, cutoff, results);
+  } else {
+    query_model(
+      regions, npatients1, npatients2,
+      (COMPARISON)comp1, value1, (EQUALITY)eq1, (VARIATION_TYPE)type1,
+      (COMPARISON)comp2, value2, (EQUALITY)eq2, (VARIATION_TYPE)type2,
+      results
+    );
+  }
+  
+  if(results.size() == 0) {
+    return NULL;
   }
 
   // sort by p-value
@@ -68,7 +83,7 @@ DataFrame convaqCpp(
 
     std::vector<std::thread> threads;
     for(size_t tid = 0; tid < nthreads; ++tid) {
-      threads.push_back(std::thread([&best,&segments1,&segments2,&chromosomes,model,cutoff,qvalues_rep,npatients1,npatients2,nthreads](size_t offset) {
+      threads.push_back(std::thread([&](size_t offset) {
         // collect all group-patient pairs
         std::vector<std::pair<int,int>> all_patients;
         for(int i = 0; i < npatients1; ++i) all_patients.emplace_back(0, i);
@@ -108,7 +123,12 @@ DataFrame convaqCpp(
           if(model == MODEL_STAT) {
             statistical_model(q_regions, npatients1, npatients2, cutoff, q_results);
           } else if(model == MODEL_QUERY) {
-
+            query_model(
+              q_regions, npatients1, npatients2,
+              (COMPARISON)comp1, value1, (EQUALITY)eq1, (VARIATION_TYPE)type1,
+              (COMPARISON)comp2, value2, (EQUALITY)eq2, (VARIATION_TYPE)type2,
+              q_results
+            );
           }
 
           for(const CNVR &r : q_results) {
@@ -131,9 +151,7 @@ DataFrame convaqCpp(
     std::sort(results.begin(), results.end(), [](const CNVR &a, const CNVR &b) { return a.qvalue < b.qvalue; });
   }
 
-  // convert CNVR list to data frame
-  size_t n = results.size();
-
+  // prepare output
   std::vector<std::string> df_chr;
   std::vector<int> df_start, df_end, df_length, df_type;
   std::vector<double> df_pvalue, df_qvalue;
@@ -145,14 +163,27 @@ DataFrame convaqCpp(
   std::transform(results.begin(), results.end(), std::back_inserter(df_type),   [](const CNVR &r){ return r.type; });
   std::transform(results.begin(), results.end(), std::back_inserter(df_pvalue), [](const CNVR &r){ return r.pvalue; });
   std::transform(results.begin(), results.end(), std::back_inserter(df_qvalue), [](const CNVR &r){ return r.qvalue; });
-
-  return DataFrame::create(
-    Named("chr")    = df_chr,
-    Named("start")  = df_start,
-    Named("end")    = df_end,
+  
+  List out = List::create(
+    Named("chr") = df_chr,
+    Named("start") = df_start,
+    Named("end") = df_end,
     Named("length") = df_length,
-    Named("type")   = df_type,
+    Named("type") = df_type,
     Named("pvalue") = df_pvalue,
     Named("qvalue") = df_qvalue
   );
+  
+  // add within group type frequencies
+  std::vector<double> freq(results.size());
+  for(size_t group = 0; group < 2; ++group) {
+    for(size_t type = 0; type < 3; ++type) {
+      for(size_t i = 0; i < results.size(); ++i) {
+        freq[i] = regions[results[i].region].get_freq(group, type);
+      }
+      out.push_back(freq, (boost::format("freq_%d_%d") % group % type).str());
+    }
+  }
+
+  return out;
 }
