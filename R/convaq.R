@@ -5,10 +5,10 @@
 #' @param model Model type. Either "statistical" or "query".
 #' @param qvalues TRUE if q-values should be computed, FALSE otherwise.
 #' @param qvalues.rep Number of repetitions to use in q-value computation.
-#' @param nthreads Number of CPU threads to use.
-#' @param p.cutoff (query) P-value cutoff in statistical model.
-#' @param pred1 (statistical) Predicate for group 1 in query model.
-#' @param pred2 (statistical) Predicate for group 2 in query model.
+#' @param nthreads Number of threads to use. Defaults to number of cores available.
+#' @param p.cutoff (statistical) P-value cutoff in statistical model.
+#' @param pred1 (query) Predicate for group 1 in query model.
+#' @param pred2 (query) Predicate for group 2 in query model.
 convaq <- function(
   segments1,
   segments2,
@@ -83,7 +83,7 @@ convaq <- function(
     comp2, value2, eq2, type2
   );
   
-  if(is.null(out)) {
+  if(is.null(out) || length(out) == 0) {
     message("No variations found.")
     return(NA)
   }
