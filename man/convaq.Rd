@@ -27,8 +27,21 @@ convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
 
 \item{pred2}{(query model) Predicate for group 2 in query model.}
 }
+\value{
+An object of class \code{convaq} with the following elements:
+  \item{regions}{Data frame of significant regions.}
+  \item{freq}{Data frame of within-group variation frequencies for each reported region.}
+  \item{state}{The states of individual patients/samples for each region.}
+  \item{model}{Type of model used.}
+  \item{qvalues}{True if q-values were computed.}
+  \item{qvalues.rep}{Number of repetitions used in q-value computation.}
+  \item{p.cutoff}{P-value cutoff (statistical model only).}
+  \item{pred1}{Predicate for group 1 (query model only).}
+  \item{pred2}{Predicate for group 2 (query model only).}
+}
 \description{
-Perform CNV-based association study.
+CoNVaQ is a method for performing CNV-based association studies. It provides two models:
+a query-based model and a standard statistical model using Fisher's exact test.
 }
 \section{Segment data format}{
 
@@ -46,9 +59,7 @@ The order of the columns is used in order to determine the contents, not the col
 \section{Predicate format}{
 
 Predicates are given as a character vector with the following format:
-
-\code{"[COMP] [FREQ] [EQ] [TYPE]"}
-
+\preformatted{"[COMP] [FREQ] [EQ] [TYPE]"}
 where:
 \describe{
   \item{COMP}{is a comparison operator. One of "<" (less than), ">" (greater than), "<=" (less than or equal to) or ">=" (greater than or equal to).}
@@ -59,16 +70,15 @@ where:
 The four arguments must be separated by a single space.
 
 A predicate is evaluated for a specific group in a each region, and will either evaluate to TRUE or FALSE.
-If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate \code{">= 0.5 == Gain"}.
-
+If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate:
+\preformatted{">= 0.5 == Gain"}
 Likewise if we are searching for regions where less than 25\% of the patients in a group have any kind of variation,
-we can use the predicate \code{"< 0.25 != Normal"}.
-
+we can use the predicate
+\preformatted{"< 0.25 != Normal"}
 The query model works by combining two predicates, one for each group of segments.
 For instance, we can combine two predicates to search for regions where at least 50\% of patients in the first group have a "Gain",
-and less than 25\% of patients in the second group do:
-
-\code{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
+and less than 25\% of patients in the second group:
+\preformatted{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
 }
 
 \examples{

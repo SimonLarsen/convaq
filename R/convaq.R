@@ -1,5 +1,8 @@
 #' Perform CNV-based association study.
 #' 
+#' CoNVaQ is a method for performing CNV-based association studies. It provides two models:
+#' a query-based model and a standard statistical model using Fisher's exact test.
+#' 
 #' @section Segment data format:
 #' The CNV segment sets \code{segments1} and \code{segments2} must be data frame objects with the following five columns:
 #' \describe{
@@ -13,9 +16,7 @@
 #' 
 #' @section Predicate format:
 #' Predicates are given as a character vector with the following format:
-#' 
-#' \code{"[COMP] [FREQ] [EQ] [TYPE]"}
-#' 
+#' \preformatted{"[COMP] [FREQ] [EQ] [TYPE]"}
 #' where:
 #' \describe{
 #'   \item{COMP}{is a comparison operator. One of "<" (less than), ">" (greater than), "<=" (less than or equal to) or ">=" (greater than or equal to).}
@@ -26,16 +27,15 @@
 #' The four arguments must be separated by a single space.
 #' 
 #' A predicate is evaluated for a specific group in a each region, and will either evaluate to TRUE or FALSE.
-#' If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate \code{">= 0.5 == Gain"}.
-#' 
+#' If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate:
+#' \preformatted{">= 0.5 == Gain"}
 #' Likewise if we are searching for regions where less than 25\% of the patients in a group have any kind of variation,
-#' we can use the predicate \code{"< 0.25 != Normal"}.
-#' 
+#' we can use the predicate
+#' \preformatted{"< 0.25 != Normal"}
 #' The query model works by combining two predicates, one for each group of segments.
 #' For instance, we can combine two predicates to search for regions where at least 50\% of patients in the first group have a "Gain",
-#' and less than 25\% of patients in the second group do:
-#' 
-#' \code{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
+#' and less than 25\% of patients in the second group:
+#' \preformatted{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
 #' 
 #' @examples
 #' data("example", package="rconvaq")
@@ -50,7 +50,6 @@
 #' convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="<= 0.2 == Gain")
 #' convaq(s1, s2, model="query", pred1=">= 0.6 != Normal", pred2=">= 0.6 == Normal")
 #' 
-#' @export
 #' @param segments1 Data frame of segments for group 1. See details.
 #' @param segments2 Data frame of segments for group 2. See details.
 #' @param model Model type. Either "statistical" or "query".
@@ -60,6 +59,17 @@
 #' @param p.cutoff (statistical model) P-value cutoff in statistical model.
 #' @param pred1 (query model) Predicate for group 1 in query model.
 #' @param pred2 (query model) Predicate for group 2 in query model.
+#' @return An object of class \code{convaq} with the following elements:
+#'   \item{regions}{Data frame of significant regions.}
+#'   \item{freq}{Data frame of within-group variation frequencies for each reported region.}
+#'   \item{state}{The states of individual patients/samples for each region.}
+#'   \item{model}{Type of model used.}
+#'   \item{qvalues}{True if q-values were computed.}
+#'   \item{qvalues.rep}{Number of repetitions used in q-value computation.}
+#'   \item{p.cutoff}{P-value cutoff (statistical model only).}
+#'   \item{pred1}{Predicate for group 1 (query model only).}
+#'   \item{pred2}{Predicate for group 2 (query model only).}
+#' @export
 convaq <- function(
   segments1,
   segments2,
@@ -122,8 +132,8 @@ convaq <- function(
 
   if(is.null(nthreads)) nthreads <- 0
   
-  comp1 <- 0; comp2 <- 0; value1 <- 0; value2 <- 0
-  eq1 <- 0; eq2 <- 0; type1 <- 0; type2 <- 0
+  comp1 <- 0; value1 <- 0; eq1 <- 0; type1 <- 0;
+  comp2 <- 0; value2 <- 0; eq2 <- 0; type2 <- 0;
 
   if(model.full == "query") {
     if(is.null(pred1)) stop("Missing predicate for group 1.")
@@ -145,34 +155,51 @@ convaq <- function(
     comp2, value2, eq2, type2
   );
   
-  if(is.null(out) || length(out) == 0) {
+  if(is.null(out)) {
     message("No variations found.")
     return(NA)
   }
   
-  out <- data.frame(out)
-  colnames(out) <-  c(
-    "chr", "start", "end", "length", "type", "pvalue", "qvalue",
-    paste0(name1, ": ", types.pretty),
-    paste0(name2, ": ", types.pretty)
-  )
+  # fix column names for frequency table
+  colnames(out$freq) <- c(paste0(name1, ": ", types.pretty), paste0(name2, ": ", types.pretty))
 
   # convert
-  out$type <- factor(types.pretty[out$type+1], levels=c(types.pretty,"Normal"))
+  out$regions$type <- factor(types.pretty[out$regions$type+1], levels=c(types.pretty,"Normal"))
 
+  #remove unnecessary columns
   remove.cols <- c()
-  
-  # set p-values to NA if using query model
   if(model.full == "query") {
     remove.cols <- c(remove.cols, "pvalue")
   }
-  # set q-values to NA if not computed
   if(!qvalues) {
     remove.cols <- c(remove.cols, "qvalue")
   }
-
-  #remove unnecessary columns
-  out <- out[,-match(remove.cols, colnames(out))]
+  out$regions <- out$regions[,-match(remove.cols, colnames(out$regions))]
   
-  return(out)
+  # extract individual patient states
+  for(i in 1:length(out$state)) {
+    names(out$state[[i]]) <- c(name1, name2)
+    out$state[[i]][[1]] <- lapply(out$state[[i]][[1]], function(x) types.pretty[x+1])
+    out$state[[i]][[2]] <- lapply(out$state[[i]][[2]], function(x) types.pretty[x+1])
+    names(out$state[[i]][[1]]) <- levels(patients1)
+    names(out$state[[i]][[2]]) <- levels(patients2)
+  }
+  
+  # create output object
+  result <- list()
+  result$model <- model.full
+  result$regions <- out$regions
+  result$freq <- out$freq
+  result$state <- out$state
+  result$qvalues <- qvalues
+  result$qvalues.rep <- qvalues.rep
+  if(model.full == "statistical") {
+    result$p.cutoff <- p.cutoff
+  } else {
+    result$pred1 <- pred1
+    result$pred2 <- pred2
+  }
+  class(result) <- "convaq"
+  
+  return(result)
 }

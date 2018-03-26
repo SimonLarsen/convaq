@@ -43,8 +43,10 @@ List convaqCpp(
   // get number of patients in each group
   IntegerVector patients1 = df1["patient"];
   IntegerVector patients2 = df2["patient"];
-  int npatients1 = Rcpp::max(patients1)+1;
-  int npatients2 = Rcpp::max(patients2)+1;
+  int npatients[2] = {
+    Rcpp::max(patients1)+1,
+    Rcpp::max(patients2)+1
+  };
 
   // grab all chromosomes in data set
   std::unordered_set<std::string> chromosomes;
@@ -54,15 +56,15 @@ List convaqCpp(
   for(size_t i = 0; i < chr2.length(); ++i) chromosomes.insert(std::string(chr2[i]));
 
   std::vector<Region> regions;
-  get_regions(segments1, segments2, npatients1, npatients2, chromosomes, regions);
+  get_regions(segments1, segments2, npatients[0], npatients[1], chromosomes, regions);
 
   std::vector<CNVR> results;
 
   if(model == MODEL_STAT) {
-    statistical_model(regions, npatients1, npatients2, cutoff, results);
+    statistical_model(regions, npatients[0], npatients[1], cutoff, results);
   } else {
     query_model(
-      regions, npatients1, npatients2,
+      regions, npatients[0], npatients[1],
       (COMPARISON)comp1, value1, (EQUALITY)eq1, (VARIATION_TYPE)type1,
       (COMPARISON)comp2, value2, (EQUALITY)eq2, (VARIATION_TYPE)type2,
       results
@@ -86,8 +88,9 @@ List convaqCpp(
       threads.push_back(std::thread([&](size_t offset) {
         // collect all group-patient pairs
         std::vector<std::pair<int,int>> all_patients;
-        for(int i = 0; i < npatients1; ++i) all_patients.emplace_back(0, i);
-        for(int i = 0; i < npatients2; ++i) all_patients.emplace_back(1, i);
+        for(size_t group = 0; group < 2; ++group) {
+          for(int i = 0; i < npatients[group]; ++i) all_patients.emplace_back(0, i);
+        }
 
         std::random_device rd;
         std::minstd_rand rand(rd());
@@ -96,7 +99,7 @@ List convaqCpp(
           std::shuffle(all_patients.begin(), all_patients.end(), rand);
 
           std::vector<std::set<int>> selected(2);
-          for(size_t i = 0; i < npatients1; ++i) {
+          for(size_t i = 0; i < npatients[0]; ++i) {
             selected[all_patients[i].first].insert(all_patients[i].second);
           }
 
@@ -117,14 +120,14 @@ List convaqCpp(
           }
 
           std::vector<Region> q_regions;
-          get_regions(q_segments1, q_segments2, npatients1, npatients2, chromosomes, q_regions);
+          get_regions(q_segments1, q_segments2, npatients[0], npatients[1], chromosomes, q_regions);
 
           std::vector<CNVR> q_results;
           if(model == MODEL_STAT) {
-            statistical_model(q_regions, npatients1, npatients2, cutoff, q_results);
+            statistical_model(q_regions, npatients[0], npatients[1], cutoff, q_results);
           } else if(model == MODEL_QUERY) {
             query_model(
-              q_regions, npatients1, npatients2,
+              q_regions, npatients[0], npatients[1],
               (COMPARISON)comp1, value1, (EQUALITY)eq1, (VARIATION_TYPE)type1,
               (COMPARISON)comp2, value2, (EQUALITY)eq2, (VARIATION_TYPE)type2,
               q_results
@@ -164,7 +167,7 @@ List convaqCpp(
   std::transform(results.begin(), results.end(), std::back_inserter(df_pvalue), [](const CNVR &r){ return r.pvalue; });
   std::transform(results.begin(), results.end(), std::back_inserter(df_qvalue), [](const CNVR &r){ return r.qvalue; });
   
-  List out = List::create(
+  DataFrame out_regions = DataFrame::create(
     Named("chr") = df_chr,
     Named("start") = df_start,
     Named("end") = df_end,
@@ -174,16 +177,39 @@ List convaqCpp(
     Named("qvalue") = df_qvalue
   );
   
-  // add within group type frequencies
+  // get within-group frequencies
+  List out_freq = List::create();
   std::vector<double> freq(results.size());
   for(size_t group = 0; group < 2; ++group) {
     for(size_t type = 0; type < 3; ++type) {
       for(size_t i = 0; i < results.size(); ++i) {
         freq[i] = regions[results[i].region].get_freq(group, type);
       }
-      out.push_back(freq, (boost::format("freq_%d_%d") % group % type).str());
+      out_freq.push_back(freq);
     }
   }
-
-  return out;
+  
+  List out_state = List::create();
+  for(CNVR &r : results) {
+    Region &re = regions[r.region];
+    List r_state = List::create();
+    for(size_t group = 0; group < 2; ++group) {
+      List group_state = List::create();
+      for(size_t i = 0; i < npatients[group]; ++i) {
+        NumericVector set = NumericVector::create();
+        for(size_t type = 0; type < 3; ++type) {
+          if(re.state[group][type][i]) set.push_back(type);
+        }
+        group_state.push_back(set);
+      }
+      r_state.push_back(group_state);
+    }
+    out_state.push_back(r_state);
+  }
+  
+  return List::create(
+    Named("regions") = out_regions,
+    Named("freq") = DataFrame(out_freq),
+    Named("state") = out_state
+  );
 }
