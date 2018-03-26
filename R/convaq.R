@@ -23,16 +23,32 @@
 #'   \item{EQ}{is either "==" (equal to) or "!=" (not equal to).}
 #'   \item{TYPE}{is a segment type. One of "Gain", "Loss", "LOH" or "Normal".}
 #' }
-#' A predicate is evaluate for a group in a specific region, and will either be true or false.
+#' The four arguments must be separated by a single space.
+#' 
+#' A predicate is evaluated for a specific group in a each region, and will either evaluate to TRUE or FALSE.
 #' If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate \code{">= 0.5 == Gain"}.
 #' 
 #' Likewise if we are searching for regions where less than 25\% of the patients in a group have any kind of variation,
 #' we can use the predicate \code{"< 0.25 != Normal"}.
 #' 
-#' We can combine these two predicates to search for regions where at least 50\% of patients in the first group have a "Gain",
-#' and less than 25\% of patients in the second group have any variation like this:
+#' The query model works by combining two predicates, one for each group of segments.
+#' For instance, we can combine two predicates to search for regions where at least 50\% of patients in the first group have a "Gain",
+#' and less than 25\% of patients in the second group do:
 #' 
-#' \code{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 != Normal")}
+#' \code{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
+#' 
+#' @examples
+#' data("example", package="rconvaq")
+#' s1 <- example$disease
+#' s2 <- example$healthy
+#' 
+#' # statistical model
+#' convaq(s1, s2, model="statistical", p.cutoff=0.05, qvalues=FALSE)
+#' convaq(s1, s2, model="statistical", p.cutoff=0.05, qvalues=TRUE, qvalues.rep=2000)
+#' 
+#' # query model
+#' convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="<= 0.2 == Gain")
+#' convaq(s1, s2, model="query", pred1=">= 0.6 != Normal", pred2=">= 0.6 == Normal")
 #' 
 #' @export
 #' @param segments1 Data frame of segments for group 1. See details.
