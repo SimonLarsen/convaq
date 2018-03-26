@@ -10,6 +10,14 @@ CoNVaQ provides two models:
 
 CoNVaQ is also available as an online platform at [https://convaq.compbio.sdu.dk](https://convaq.compbio.sdu.dk).
 
+## Installation
+
+You can install the latest development using devtools with:
+
+```R
+devtools::install_github("SimonLarsen/convaq")
+```
+
 ## License
 
 CoNVaQ is licensed under an MIT license. See the [LICENSE](LICENSE) file for details.
