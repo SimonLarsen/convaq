@@ -4,13 +4,14 @@
 \alias{convaq}
 \title{Perform CNV-based association study.}
 \usage{
-convaq(segments1, segments2, model, qvalues = FALSE, qvalues.rep = 500,
-  nthreads = NULL, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL)
+convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
+  qvalues = FALSE, qvalues.rep = 500, nthreads = NULL, p.cutoff = 0.05,
+  pred1 = NULL, pred2 = NULL)
 }
 \arguments{
-\item{segments1}{Data frame of segments for group 1.}
+\item{segments1}{Data frame of segments for group 1. See details.}
 
-\item{segments2}{Data frame of segments for group 2.}
+\item{segments2}{Data frame of segments for group 2. See details.}
 
 \item{model}{Model type. Either "statistical" or "query".}
 
@@ -18,14 +19,52 @@ convaq(segments1, segments2, model, qvalues = FALSE, qvalues.rep = 500,
 
 \item{qvalues.rep}{Number of repetitions to use in q-value computation.}
 
-\item{nthreads}{Number of CPU threads to use.}
+\item{nthreads}{Number of threads to use. Defaults to number of cores available.}
 
-\item{p.cutoff}{(query) P-value cutoff in statistical model.}
+\item{p.cutoff}{(statistical model) P-value cutoff in statistical model.}
 
-\item{pred1}{(statistical) Predicate for group 1 in query model.}
+\item{pred1}{(query model) Predicate for group 1 in query model.}
 
-\item{pred2}{(statistical) Predicate for group 2 in query model.}
+\item{pred2}{(query model) Predicate for group 2 in query model.}
 }
 \description{
 Perform CNV-based association study.
 }
+\section{Segment data format}{
+
+The CNV segment sets \code{segments1} and \code{segments2} must be data frame objects with the following five columns:
+\describe{
+  \item{patient}{Patient identifier for the patient/sample the segment was found in.}
+  \item{chr}{Chromosome the segment is located in.}
+  \item{start}{First position of the segment in base pairs.}
+  \item{end}{Last position of the segment in base pairs.}
+  \item{type}{Segment type. One of "Gain", "Loss" or "LOH".}
+}
+The order of the columns is used in order to determine the contents, not the column names.
+}
+
+\section{Predicate format}{
+
+Predicates are given as a character vector with the following format:
+
+\code{"[COMP] [FREQ] [EQ] [TYPE]"}
+
+where:
+\describe{
+  \item{COMP}{is a comparison operator. One of "<" (less than), ">" (greater than), "<=" (less than or equal to) or ">=" (greater than or equal to).}
+  \item{FREQ}{is a numerical value between 0 and 1.}
+  \item{EQ}{is either "==" (equal to) or "!=" (not equal to).}
+  \item{TYPE}{is a segment type. One of "Gain", "Loss", "LOH" or "Normal".}
+}
+A predicate is evaluate for a group in a specific region, and will either be true or false.
+If we want to find regions where at least 50\% of the patients in a group are reported as "Gain", we can use the predicate \code{">= 0.5 == Gain"}.
+
+Likewise if we are searching for regions where less than 25\% of the patients in a group have any kind of variation,
+we can use the predicate \code{"< 0.25 != Normal"}.
+
+We can combine these two predicates to search for regions where at least 50\% of patients in the first group have a "Gain",
+and less than 25\% of patients in the second group have any variation like this:
+
+\code{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 != Normal")}
+}
+

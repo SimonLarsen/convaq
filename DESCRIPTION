@@ -4,11 +4,13 @@ Title: Perform CNV-based association studies
 Version: 0.1.0
 Author: Simon J. Larsen
 Maintainer: Simon J. Larsen <simonhffh@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: GPL
+Description: CoNVaQ is a package for finding CNV-regions significantly associated to a disease or phenotype.
+License: MIT
 Encoding: UTF-8
 LazyData: true
 Imports: Rcpp (>= 0.12.15)
 LinkingTo: Rcpp, BH
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
