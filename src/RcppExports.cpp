@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // convaqCpp
 List convaqCpp(DataFrame df1, DataFrame df2, uint model_num, bool qvalues, uint qvalues_rep, uint nthreads, double cutoff, uint comp1, double value1, uint eq1, uint type1, uint comp2, double value2, uint eq2, uint type2);
-RcppExport SEXP _rconvaq_convaqCpp(SEXP df1SEXP, SEXP df2SEXP, SEXP model_numSEXP, SEXP qvaluesSEXP, SEXP qvalues_repSEXP, SEXP nthreadsSEXP, SEXP cutoffSEXP, SEXP comp1SEXP, SEXP value1SEXP, SEXP eq1SEXP, SEXP type1SEXP, SEXP comp2SEXP, SEXP value2SEXP, SEXP eq2SEXP, SEXP type2SEXP) {
+RcppExport SEXP _convaq_convaqCpp(SEXP df1SEXP, SEXP df2SEXP, SEXP model_numSEXP, SEXP qvaluesSEXP, SEXP qvalues_repSEXP, SEXP nthreadsSEXP, SEXP cutoffSEXP, SEXP comp1SEXP, SEXP value1SEXP, SEXP eq1SEXP, SEXP type1SEXP, SEXP comp2SEXP, SEXP value2SEXP, SEXP eq2SEXP, SEXP type2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,11 +32,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rconvaq_convaqCpp", (DL_FUNC) &_rconvaq_convaqCpp, 15},
+    {"_convaq_convaqCpp", (DL_FUNC) &_convaq_convaqCpp, 15},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_rconvaq(DllInfo *dll) {
+RcppExport void R_init_convaq(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

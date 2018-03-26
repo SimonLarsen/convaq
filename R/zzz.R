@@ -1,4 +1,4 @@
-#' rconvaq
+#' convaq
 #' 
 #' Perform CNV-based association studies
 #' 
@@ -6,6 +6,6 @@
 #' @author Simon J. Larsen <simonhffh@gmail.com>
 #' @import Rcpp
 #' @importFrom Rcpp evalCpp
-#' @useDynLib rconvaq
-#' @name rconvaq
+#' @useDynLib convaq
+#' @name convaq
 NULL

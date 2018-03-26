@@ -1,4 +1,4 @@
-Package: rconvaq
+Package: convaq
 Type: Package
 Title: Perform CNV-based association studies
 Version: 0.1.0

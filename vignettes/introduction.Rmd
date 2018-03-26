@@ -35,7 +35,7 @@ CoNVaQ takes as input two sets of segmented CNV calls, one for each group of pat
 You can load the included example data set like this:
 
 ```{r}
-data("example", package="rconvaq")
+data("example", package="convaq")
 ```
 
 The `example` object contains two data frames, `disease` and `healthy`:
@@ -48,7 +48,7 @@ head(example$healthy)
 ## Statistical model
 
 ```{r results="hide"}
-library(rconvaq)
+library(convaq)
 results <- convaq(
   example$disease, example$healthy,
   model = "statistical",

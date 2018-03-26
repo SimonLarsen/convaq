@@ -38,7 +38,7 @@
 #' \preformatted{convaq(s1, s2, model="query", pred1=">= 0.5 == Gain", pred2="< 0.25 == Gain")}
 #' 
 #' @examples
-#' data("example", package="rconvaq")
+#' data("example", package="convaq")
 #' s1 <- example$disease
 #' s2 <- example$healthy
 #' 
