@@ -18,8 +18,8 @@ frequencies.convaq <- function(x) {
   rows <- lapply(x$freq, function(re) {
     r1 <- rbind(sapply(re[[1]], fix))
     r2 <- rbind(sapply(re[[2]], fix))
-    colnames(r1) <- paste0(res$name1, ": ", types.pretty)
-    colnames(r2) <- paste0(res$name2, ": ", types.pretty)
+    colnames(r1) <- paste0(x$name1, ": ", types.pretty)
+    colnames(r2) <- paste0(x$name2, ": ", types.pretty)
     data.frame(r1, r2, check.names=FALSE)
   })
   
