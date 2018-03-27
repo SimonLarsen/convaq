@@ -169,12 +169,14 @@ convaq <- function(
   #remove unnecessary columns
   remove.cols <- c()
   if(model.full == "query") {
-    remove.cols <- c(remove.cols, "pvalue")
+    remove.cols <- c(remove.cols, c("pvalue", "type"))
   }
   if(!qvalues) {
     remove.cols <- c(remove.cols, "qvalue")
   }
-  out$regions <- out$regions[,-match(remove.cols, colnames(out$regions))]
+  if(length(remove.cols) > 0) {
+    out$regions <- out$regions[,-match(remove.cols, colnames(out$regions))]
+  }
   
   # extract individual patient states
   for(i in 1:length(out$state)) {
