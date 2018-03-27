@@ -15,6 +15,7 @@
 #include "get_regions.h"
 #include "statistical_model.h"
 #include "query_model.h"
+#include "merge.h"
 
 using namespace Rcpp;
 
@@ -25,6 +26,8 @@ List convaqCpp(
     uint model_num,
     bool qvalues,
     uint qvalues_rep,
+    bool merge,
+    uint merge_threshold,
     uint nthreads,
     double cutoff,
     uint comp1, double value1, uint eq1, uint type1,
@@ -74,7 +77,9 @@ List convaqCpp(
   if(results.size() == 0) {
     return NULL;
   }
-
+  
+  if(merge) merge_adjacent(results, merge_threshold);
+  
   // sort by p-value
   std::sort(results.begin(), results.end(), [](const CNVR &a, const CNVR &b) { return a.pvalue < b.pvalue; });
 
@@ -133,6 +138,8 @@ List convaqCpp(
               q_results
             );
           }
+          
+          if(q_results.size() > 0 && merge) merge_adjacent(q_results, merge_threshold);
 
           for(const CNVR &r : q_results) {
             best[r.type][rep] = std::max(best[r.type][rep], r.length);
@@ -179,37 +186,30 @@ List convaqCpp(
   
   // get within-group frequencies
   List out_freq = List::create();
-  std::vector<double> freq(results.size());
-  for(size_t group = 0; group < 2; ++group) {
-    for(size_t type = 0; type < 3; ++type) {
-      for(size_t i = 0; i < results.size(); ++i) {
-        freq[i] = regions[results[i].region].get_freq(group, type);
+  for(const CNVR &r : results) {
+    List region_freq = List::create();
+    for(size_t group = 0; group < 2; ++group) {
+      List group_freq = List::create();
+      for(size_t type = 0; type < 3; ++type) {
+        group_freq.push_back(r.get_freq(group, type));
       }
-      out_freq.push_back(freq);
+      region_freq.push_back(group_freq);
     }
+    out_freq.push_back(region_freq);
   }
   
   List out_state = List::create();
   for(CNVR &r : results) {
-    Region &re = regions[r.region];
     List r_state = List::create();
     for(size_t group = 0; group < 2; ++group) {
-      List group_state = List::create();
-      for(size_t i = 0; i < npatients[group]; ++i) {
-        NumericVector set = NumericVector::create();
-        for(size_t type = 0; type < 3; ++type) {
-          if(re.state[group][type][i]) set.push_back(type);
-        }
-        group_state.push_back(set);
-      }
-      r_state.push_back(group_state);
+      r_state.push_back(r.get_state(group));
     }
     out_state.push_back(r_state);
   }
   
   return List::create(
     Named("regions") = out_regions,
-    Named("freq") = DataFrame(out_freq),
+    Named("freq") = out_freq,
     Named("state") = out_state
   );
 }

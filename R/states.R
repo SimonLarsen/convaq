@@ -8,16 +8,11 @@ states <- function(x, ...) UseMethod("states")
 states.convaq <- function(x) {
   if(class(x) != "convaq") stop("Object is not a convaq object.")
   
-  fix <- function(x) {
-    if(length(x) == 0) NA else paste0(x, collapse=",")
-  }
-  
   rows <- lapply(x$state, function(re) {
-    r1 <- rbind(sapply(re[[1]], fix))
-    r2 <- rbind(sapply(re[[2]], fix))
+    r1 <- rbind(sapply(re[[1]], paste0, collapse=","))
+    r2 <- rbind(sapply(re[[2]], paste0, collapse=","))
     cbind(r1, r2)
   })
   
-  out <- do.call(rbind, rows)
-  data.frame(out)
+  data.frame(do.call(rbind, rows))
 }

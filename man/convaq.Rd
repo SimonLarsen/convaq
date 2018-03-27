@@ -8,8 +8,8 @@
 \title{Perform CNV-based association study.}
 \usage{
 convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
-  qvalues = FALSE, qvalues.rep = 500, nthreads = NULL, p.cutoff = 0.05,
-  pred1 = NULL, pred2 = NULL)
+  qvalues = FALSE, qvalues.rep = 500, nthreads = NULL, merge = FALSE,
+  merge.threshold = 0, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL)
 }
 \arguments{
 \item{segments1}{Data frame of segments for group 1. See details.}
@@ -17,6 +17,10 @@ convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
 \item{segments2}{Data frame of segments for group 2. See details.}
 
 \item{model}{Model type. Either "statistical" or "query".}
+
+\item{name1}{Name of first group.}
+
+\item{name2}{Name of second group.}
 
 \item{qvalues}{TRUE if q-values should be computed, FALSE otherwise.}
 
@@ -36,8 +40,12 @@ An object of class \code{convaq} with the following elements:
   \item{freq}{Data frame of within-group variation frequencies for each reported region.}
   \item{state}{The states of individual patients/samples for each region.}
   \item{model}{Type of model used.}
+  \item{name1}{Name of first group.}
+  \item{name2}{Name of second group.}
   \item{qvalues}{True if q-values were computed.}
   \item{qvalues.rep}{Number of repetitions used in q-value computation.}
+  \item{merge}{True if adjacent regions of same type should be merged.}
+  \item{merge.threshold}{Maximum distance (in base pairs) allowed between merged regions.}
   \item{p.cutoff}{P-value cutoff (statistical model only).}
   \item{pred1}{Predicate for group 1 (query model only).}
   \item{pred2}{Predicate for group 2 (query model only).}

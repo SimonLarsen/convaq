@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // convaqCpp
-List convaqCpp(DataFrame df1, DataFrame df2, uint model_num, bool qvalues, uint qvalues_rep, uint nthreads, double cutoff, uint comp1, double value1, uint eq1, uint type1, uint comp2, double value2, uint eq2, uint type2);
-RcppExport SEXP _convaq_convaqCpp(SEXP df1SEXP, SEXP df2SEXP, SEXP model_numSEXP, SEXP qvaluesSEXP, SEXP qvalues_repSEXP, SEXP nthreadsSEXP, SEXP cutoffSEXP, SEXP comp1SEXP, SEXP value1SEXP, SEXP eq1SEXP, SEXP type1SEXP, SEXP comp2SEXP, SEXP value2SEXP, SEXP eq2SEXP, SEXP type2SEXP) {
+List convaqCpp(DataFrame df1, DataFrame df2, uint model_num, bool qvalues, uint qvalues_rep, bool merge, uint merge_threshold, uint nthreads, double cutoff, uint comp1, double value1, uint eq1, uint type1, uint comp2, double value2, uint eq2, uint type2);
+RcppExport SEXP _convaq_convaqCpp(SEXP df1SEXP, SEXP df2SEXP, SEXP model_numSEXP, SEXP qvaluesSEXP, SEXP qvalues_repSEXP, SEXP mergeSEXP, SEXP merge_thresholdSEXP, SEXP nthreadsSEXP, SEXP cutoffSEXP, SEXP comp1SEXP, SEXP value1SEXP, SEXP eq1SEXP, SEXP type1SEXP, SEXP comp2SEXP, SEXP value2SEXP, SEXP eq2SEXP, SEXP type2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -16,6 +16,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< uint >::type model_num(model_numSEXP);
     Rcpp::traits::input_parameter< bool >::type qvalues(qvaluesSEXP);
     Rcpp::traits::input_parameter< uint >::type qvalues_rep(qvalues_repSEXP);
+    Rcpp::traits::input_parameter< bool >::type merge(mergeSEXP);
+    Rcpp::traits::input_parameter< uint >::type merge_threshold(merge_thresholdSEXP);
     Rcpp::traits::input_parameter< uint >::type nthreads(nthreadsSEXP);
     Rcpp::traits::input_parameter< double >::type cutoff(cutoffSEXP);
     Rcpp::traits::input_parameter< uint >::type comp1(comp1SEXP);
@@ -26,13 +28,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type value2(value2SEXP);
     Rcpp::traits::input_parameter< uint >::type eq2(eq2SEXP);
     Rcpp::traits::input_parameter< uint >::type type2(type2SEXP);
-    rcpp_result_gen = Rcpp::wrap(convaqCpp(df1, df2, model_num, qvalues, qvalues_rep, nthreads, cutoff, comp1, value1, eq1, type1, comp2, value2, eq2, type2));
+    rcpp_result_gen = Rcpp::wrap(convaqCpp(df1, df2, model_num, qvalues, qvalues_rep, merge, merge_threshold, nthreads, cutoff, comp1, value1, eq1, type1, comp2, value2, eq2, type2));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_convaq_convaqCpp", (DL_FUNC) &_convaq_convaqCpp, 15},
+    {"_convaq_convaqCpp", (DL_FUNC) &_convaq_convaqCpp, 17},
     {NULL, NULL, 0}
 };
 

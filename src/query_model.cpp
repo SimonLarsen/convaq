@@ -18,7 +18,7 @@ void query_model(
   for(size_t i = 0; i < regions.size(); ++i) {
     const Region &r = regions[i];
     if(pred1.match(r.state[0]) && pred2.match(r.state[1])) {
-      result.emplace_back(i, r.chr, r.start, r.end, r.length, Normal, 1);
+      result.emplace_back(r, Normal, 1);
     }
   }
 }

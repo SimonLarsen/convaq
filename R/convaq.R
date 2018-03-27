@@ -53,6 +53,8 @@
 #' @param segments1 Data frame of segments for group 1. See details.
 #' @param segments2 Data frame of segments for group 2. See details.
 #' @param model Model type. Either "statistical" or "query".
+#' @param name1 Name of first group.
+#' @param name2 Name of second group.
 #' @param qvalues TRUE if q-values should be computed, FALSE otherwise.
 #' @param qvalues.rep Number of repetitions to use in q-value computation.
 #' @param nthreads Number of threads to use. Defaults to number of cores available.
@@ -64,8 +66,12 @@
 #'   \item{freq}{Data frame of within-group variation frequencies for each reported region.}
 #'   \item{state}{The states of individual patients/samples for each region.}
 #'   \item{model}{Type of model used.}
+#'   \item{name1}{Name of first group.}
+#'   \item{name2}{Name of second group.}
 #'   \item{qvalues}{True if q-values were computed.}
 #'   \item{qvalues.rep}{Number of repetitions used in q-value computation.}
+#'   \item{merge}{True if adjacent regions of same type should be merged.}
+#'   \item{merge.threshold}{Maximum distance (in base pairs) allowed between merged regions.}
 #'   \item{p.cutoff}{P-value cutoff (statistical model only).}
 #'   \item{pred1}{Predicate for group 1 (query model only).}
 #'   \item{pred2}{Predicate for group 2 (query model only).}
@@ -79,6 +85,8 @@ convaq <- function(
   qvalues = FALSE,
   qvalues.rep = 500,
   nthreads = NULL,
+  merge = FALSE,
+  merge.threshold = 0,
   p.cutoff = 0.05,
   pred1 = NULL,
   pred2 = NULL
@@ -87,10 +95,17 @@ convaq <- function(
   # Gain = 0, Loss = 1, LOH = 2.
   types.pretty <- c("Gain","Loss","LOH")
   types <- tolower(types.pretty)
+  # add 3 = "Normal".
+  types.pretty.full <- c(types.pretty, "Normal")
   
   # check valid number of columns
   if(ncol(segments1) < 5) stop("segments1 does not have 5 columns")
   if(ncol(segments2) < 5) stop("segments2 does not have 5 columns")
+  
+  # check group names are not the same
+  if(name1 == name2) {
+    stop("Group names cannot be identifical.")
+  }
   
   # extract first five columns and set colnames
   segments1 <- segments1[,1:5]
@@ -149,6 +164,7 @@ convaq <- function(
     segments1, segments2,
     model.num,
     qvalues, qvalues.rep,
+    merge, merge.threshold,
     nthreads,
     p.cutoff,
     comp1, value1, eq1, type1,
@@ -159,9 +175,6 @@ convaq <- function(
     message("No variations found.")
     return(NA)
   }
-  
-  # fix column names for frequency table
-  colnames(out$freq) <- c(paste0(name1, ": ", types.pretty), paste0(name2, ": ", types.pretty))
 
   # convert
   out$regions$type <- factor(types.pretty[out$regions$type+1], levels=c(types.pretty,"Normal"))
@@ -178,18 +191,27 @@ convaq <- function(
     out$regions <- out$regions[,-match(remove.cols, colnames(out$regions))]
   }
   
-  # extract individual patient states
-  for(i in 1:length(out$state)) {
+  # set names for freq object
+  for(i in 1:length(out$freq)) {
+    names(out$freq[[i]]) <- c(name1, name2)
+    names(out$freq[[i]][[1]]) <- types.pretty
+    names(out$freq[[i]][[2]]) <- types.pretty
+  }
+  
+  # set names for state object
+  for(i in 1:length(out$freq)) {
     names(out$state[[i]]) <- c(name1, name2)
-    out$state[[i]][[1]] <- lapply(out$state[[i]][[1]], function(x) types.pretty[x+1])
-    out$state[[i]][[2]] <- lapply(out$state[[i]][[2]], function(x) types.pretty[x+1])
     names(out$state[[i]][[1]]) <- levels(patients1)
     names(out$state[[i]][[2]]) <- levels(patients2)
+    out$state[[i]][[1]] <- lapply(out$state[[i]][[1]], function(x) types.pretty.full[x+1])
+    out$state[[i]][[2]] <- lapply(out$state[[i]][[2]], function(x) types.pretty.full[x+1])
   }
   
   # create output object
   result <- list()
   result$model <- model.full
+  result$name1 <- name1
+  result$name2 <- name2
   result$regions <- out$regions
   result$freq <- out$freq
   result$state <- out$state
