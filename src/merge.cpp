@@ -15,11 +15,12 @@ void merge_adjacent(std::vector<CNVR> &regions, uint threshold) {
   while(i < regions.size()) {
     size_t first = i;
     size_t last = i++;
+    
     while(
       i < regions.size() &&
       regions[i].type == regions[first].type &&
       regions[i].chr == regions[first].chr &&
-      regions[i].start-regions[i-1].end-1 <= threshold
+      regions[i].start-regions[i-1].end-1 <= (int)threshold
     ) {
       last = i;
       ++i;
