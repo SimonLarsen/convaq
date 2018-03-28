@@ -8,8 +8,9 @@
 \title{Perform CNV-based association study.}
 \usage{
 convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
-  qvalues = FALSE, qvalues.rep = 500, nthreads = NULL, merge = FALSE,
-  merge.threshold = 0, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL)
+  qvalues = FALSE, qvalues.rep = 500, merge = FALSE,
+  merge.threshold = 0, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL,
+  nthreads = NULL)
 }
 \arguments{
 \item{segments1}{Data frame of segments for group 1. See details.}
@@ -26,13 +27,13 @@ convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
 
 \item{qvalues.rep}{Number of repetitions to use in q-value computation.}
 
-\item{nthreads}{Number of threads to use. Defaults to number of cores available.}
-
 \item{p.cutoff}{(statistical model) P-value cutoff in statistical model.}
 
 \item{pred1}{(query model) Predicate for group 1 in query model.}
 
 \item{pred2}{(query model) Predicate for group 2 in query model.}
+
+\item{nthreads}{Number of threads to use. Defaults to number of cores available.}
 }
 \value{
 An object of class \code{convaq} with the following elements:

@@ -78,8 +78,8 @@ public:
             found.insert(type);
             is_normal = false;
           }
-          if(is_normal) found.insert(Normal);
         }
+        if(is_normal) found.insert(Normal);
       }
       state.emplace_back(found.begin(), found.end());
     }

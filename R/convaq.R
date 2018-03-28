@@ -57,10 +57,10 @@
 #' @param name2 Name of second group.
 #' @param qvalues TRUE if q-values should be computed, FALSE otherwise.
 #' @param qvalues.rep Number of repetitions to use in q-value computation.
-#' @param nthreads Number of threads to use. Defaults to number of cores available.
 #' @param p.cutoff (statistical model) P-value cutoff in statistical model.
 #' @param pred1 (query model) Predicate for group 1 in query model.
 #' @param pred2 (query model) Predicate for group 2 in query model.
+#' @param nthreads Number of threads to use. Defaults to number of cores available.
 #' @return An object of class \code{convaq} with the following elements:
 #'   \item{regions}{Data frame of significant regions.}
 #'   \item{freq}{Data frame of within-group variation frequencies for each reported region.}
@@ -84,12 +84,12 @@ convaq <- function(
   name2 = "Group 2",
   qvalues = FALSE,
   qvalues.rep = 500,
-  nthreads = NULL,
   merge = FALSE,
   merge.threshold = 0,
   p.cutoff = 0.05,
   pred1 = NULL,
-  pred2 = NULL
+  pred2 = NULL,
+  nthreads = NULL
 ) {
   # convert segment types to numbers.
   # Gain = 0, Loss = 1, LOH = 2.
@@ -165,10 +165,10 @@ convaq <- function(
     model.num,
     qvalues, qvalues.rep,
     merge, merge.threshold,
-    nthreads,
     p.cutoff,
     comp1, value1, eq1, type1,
-    comp2, value2, eq2, type2
+    comp2, value2, eq2, type2,
+    nthreads
   );
   
   # convert

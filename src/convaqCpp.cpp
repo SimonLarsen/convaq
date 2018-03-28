@@ -28,10 +28,10 @@ List convaqCpp(
     uint qvalues_rep,
     bool merge,
     uint merge_threshold,
-    uint nthreads,
     double cutoff,
     uint comp1, double value1, uint eq1, uint type1,
-    uint comp2, double value2, uint eq2, uint type2
+    uint comp2, double value2, uint eq2, uint type2,
+    uint nthreads
 ) {
   if(nthreads == 0) nthreads = std::thread::hardware_concurrency();
 
