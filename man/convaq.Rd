@@ -54,7 +54,7 @@ An object of class \code{convaq} with the following elements:
 CoNVaQ is a method for performing CNV-based association studies. It provides two models:
 a query-based model and a standard statistical model using Fisher's exact test.
 
-Perform CNV-based association studies
+convaq
 }
 \section{Segment data format}{
 

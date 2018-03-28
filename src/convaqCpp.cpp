@@ -74,16 +74,12 @@ List convaqCpp(
     );
   }
   
-  if(results.size() == 0) {
-    return NULL;
-  }
-  
-  if(merge) merge_adjacent(results, merge_threshold);
+  if(results.size() > 0 && merge) merge_adjacent(results, merge_threshold);
   
   // sort by p-value
   std::sort(results.begin(), results.end(), [](const CNVR &a, const CNVR &b) { return a.pvalue < b.pvalue; });
 
-  if(qvalues) {
+  if(results.size() > 0 && qvalues) {
     std::vector<std::vector<int>> best(4);
 
     for(size_t i = 0; i < 4; ++i) best[i].resize(qvalues_rep, 0);

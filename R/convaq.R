@@ -171,11 +171,6 @@ convaq <- function(
     comp2, value2, eq2, type2
   );
   
-  if(is.null(out)) {
-    message("No variations found.")
-    return(NA)
-  }
-
   # convert
   out$regions$type <- factor(types.pretty[out$regions$type+1], levels=c(types.pretty,"Normal"))
 
@@ -192,14 +187,14 @@ convaq <- function(
   }
   
   # set names for freq object
-  for(i in 1:length(out$freq)) {
+  for(i in seq_along(out$freq)) {
     names(out$freq[[i]]) <- c(name1, name2)
     names(out$freq[[i]][[1]]) <- types.pretty
     names(out$freq[[i]][[2]]) <- types.pretty
   }
   
   # set names for state object
-  for(i in 1:length(out$freq)) {
+  for(i in seq_along(out$freq)) {
     names(out$state[[i]]) <- c(name1, name2)
     names(out$state[[i]][[1]]) <- levels(patients1)
     names(out$state[[i]][[2]]) <- levels(patients2)
