@@ -1,6 +1,3 @@
-#' @export
-print <- function(x, ...) UseMethod("print")
-
 #' Print description of CoNVaQ results object.
 #'
 #' @param x A convaq object.
