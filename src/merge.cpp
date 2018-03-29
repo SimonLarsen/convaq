@@ -1,4 +1,3 @@
-#include <Rcpp.h>
 #include <vector>
 #include "merge.h"
 #include "CNVR.h"

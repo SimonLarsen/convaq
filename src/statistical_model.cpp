@@ -1,4 +1,3 @@
-#include <Rcpp.h>
 #include <vector>
 #include <algorithm>
 #include "Region.h"

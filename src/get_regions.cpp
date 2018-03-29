@@ -10,7 +10,7 @@ void get_events(const std::vector<Segment> &segments, const std::string &chr, in
   for(const Segment &s : segments) {
     if(s.chr == chr) {
       events.emplace_back(s.patient, s.chr, s.start, s.type, true, group);
-      events.emplace_back(s.patient, s.chr, s.end, s.type, false, group);
+      events.emplace_back(s.patient, s.chr, s.end+1, s.type, false, group);
     }
   }
 }
@@ -51,7 +51,7 @@ void get_regions_chr(
     currentPos = nextPos;
     nextPos = events[i].position;
 
-    regions.emplace_back(chr, currentPos, nextPos, nextPos-currentPos+1, states);
+    regions.emplace_back(chr, currentPos, nextPos-1, nextPos-currentPos+1, states);
   }
 }
 

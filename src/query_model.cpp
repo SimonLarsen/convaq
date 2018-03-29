@@ -1,4 +1,3 @@
-#include <Rcpp.h>
 #include <vector>
 #include "query_model.h"
 #include "Region.h"
