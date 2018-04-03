@@ -24,7 +24,7 @@ results2 <- readRDS("results2.rds")
 results3 <- readRDS("results3.rds")
 ```
 
-This is a short description of what CoNVaQ is and why it is interesting.
+This vignette is a short introduction to the CoNVaQ R package. For a more detailed description of the functions in the CoNVaQ package and their arguments, we refer to the reference manual included with the package.
 
 ## Input data format
 
