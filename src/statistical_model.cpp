@@ -1,5 +1,5 @@
 #include <vector>
-#include <algorithm>
+#include <numeric>
 #include "Region.h"
 #include "CNVR.h"
 #include "fisher_test.h"

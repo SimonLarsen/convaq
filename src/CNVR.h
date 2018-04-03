@@ -4,7 +4,7 @@
 #include "defines.h"
 #include "Region.h"
 #include <string>
-#include <algorithm>
+#include <numeric>
 #include <set>
 
 class CNVR {

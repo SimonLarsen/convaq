@@ -1,4 +1,4 @@
-#include <algorithm>
+#include <numeric>
 #include "defines.h"
 #include "Predicate.h"
 
