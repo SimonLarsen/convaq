@@ -21,6 +21,7 @@ library(convaq)
 data("example", package="convaq")
 results <- readRDS("results.rds")
 results2 <- readRDS("results2.rds")
+results3 <- readRDS("results3.rds")
 ```
 
 This is a short description of what CoNVaQ is and why it is interesting.
@@ -106,7 +107,50 @@ If q-values are computed, the output will be sorted on that instead of p-value.
 
 ## Query model
 
-This is a quide on how to use the query model.
+The query model searches for CNV regions matching a user-defined query.
+A query is defined by two predicates, one for each group of samples.
+
+A predicate takes the following form:
+
+> [COMP] [FREQ] [EQ] [TYPE]
+
+where:
+
+* `COMP` is a comparison operator. One of "<" (less than), ">" (greater than), "<=" (less than or equal to) or ">=" (greater than or equal to).
+* `FREQ` is a numerical value between 0 and 1.
+* `EQ` is either "==" (equal to) or "!=" (not equal to).
+* `TYPE` is a segment type. One of "Gain", "Loss", "LOH" or "Normal".
+
+A predicate is given as a string, with each argument separated by a single space. For instance, if we want to find regions where at least 50% of patients in a group are reported as "Gain", we use the predicate:
+
+```r
+">= 0.5 == Gain"
+```
+
+Likewise if we are searching for regions where less than 25% of patients in a group have any kind of variation, we can use the predicate:
+
+```r
+"< 0.25 != Normal"
+```
+
+To use the query model we need to set the `model`-argument to "query" and specify the two predicates using the arguments `pred1` and `pred2`.
+Let us use the query model to search for regions where at least 50% of patients in the disease group have a gain in copy numbers, while at most 15% of patients in the healthy group do:
+
+```r
+results3 <- convaq(
+  example$disease, example$healthy,
+  model = "query",
+  name1 = "Disease", name2 = "Healthy",
+  pred1 = ">= 0.5 == Gain",
+  pred2 = "<= 0.15 == Gain",
+  qvalues = TRUE, qvalues.rep = 2000
+)
+head(regions(results3))
+```
+
+```{r echo=FALSE}
+knitr::kable(head(regions(results3)))
+```
 
 ## Accessing variation frequencies
 
@@ -147,7 +191,7 @@ head(states(results)[,c(1:3,21:23)])
 knitr::kable(head(states(results)[,c(1:3,21:23)]))
 ```
 
-Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`:
+Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`: (only six samples shown here)
 
 ```r
 cbind(
