@@ -16,15 +16,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+```{r include=FALSE}
+library(convaq)
+data("example", package="convaq")
+results <- readRDS("results.rds")
+results2 <- readRDS("results2.rds")
+```
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+This is a short description of what CoNVaQ is and why it is interesting.
 
 ## Input data format
 
-CoNVaQ takes as input two sets of segmented CNV calls, one for each group of patients. Each set must be a `data.frame` with the following five columns in *in this order*:
+CoNVaQ takes as input two sets of segmented CNV calls, one for each group of patients. Each set must be a `data.frame` with the following five columns in **in this order**:
 
 1. `patient`: An identifier for the patient or sample the segment was identified in. All segments with equal patient identifiers will be considered from the same patient/sample.
 2. `chr`: Chromosome the position is located in.
@@ -32,9 +35,9 @@ CoNVaQ takes as input two sets of segmented CNV calls, one for each group of pat
 4. `end`: Last genomic position of the segment in base pairs.
 5. `type`: The variant type of the segment. Must be one of "Gain", "Loss" or "LOH".
 
-You can load the included example data set like this:
+You can load the included synthetic example data set like this:
 
-```{r}
+```r
 data("example", package="convaq")
 ```
 
@@ -47,7 +50,9 @@ head(example$healthy)
 
 ## Statistical model
 
-```{r results="hide"}
+The statistical models searches for CNV regions significantly associated to the patient stratification using Fisher's exact test. To use the statical model, we set the `model`-argument to "statistical". We set the `p.cutoff`-argument to 0.05 to only include regions with $p < 0.05$.
+
+```r
 library(convaq)
 results <- convaq(
   example$disease, example$healthy,
@@ -55,17 +60,31 @@ results <- convaq(
   name1 = "Disease", name2="Healthy",
   p.cutoff = 0.05
 )
-head(results)
+```
+
+The `convaq`-function returns a `convaq`-object. We can inspect the object by printing it:
+
+```{r}
+print(results)
+```
+
+We see that CoNVaQ reports it found 59 statistically significant regions. Use the `regions`-method to obtain these regions.
+
+```r
+head(regions(results))
 ```
 
 ```{r echo=FALSE}
-knitr::kable(head(results))
+knitr::kable(head(regions(results)))
 ```
 
-Set the `qvalues` argument to `TRUE` to compute empirical p-values as well:
+If we want to also compute empirical q-values we set the `qvalues`-argument to `TRUE`.
+Q-values are computed by repeatedly permutating the patient distributing among the two groups and determining how often we observe a more significant result. To change the number of permutations used, we can set the `qvalues.rep`-argument. A greater value will improve accuracy at the cost of higher computation time.
 
-```{r results="hide"}
-results <- convaq(
+Let's compute q-values using 2000 repetitions:
+
+```r
+results2 <- convaq(
   example$disease, example$healthy,
   model = "statistical",
   name1 = "Disease", name2="Healthy",
@@ -73,53 +92,73 @@ results <- convaq(
   qvalues = TRUE,
   qvalues.rep = 2000
 )
-head(results[,1:7])
+head(regions(results2))
 ```
 
 ```{r echo=FALSE}
-knitr::kable(head(results[,1:7]))
+res <- head(regions(results2))
+res$pvalue <- as.character(signif(res$pvalue, digits=3))
+res$qvalue <- as.character(signif(res$qvalue, digits=3))
+knitr::kable(res)
 ```
+
+If q-values are computed, the output will be sorted on that instead of p-value.
 
 ## Query model
 
-## Vignette Info
+This is a quide on how to use the query model.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+## Accessing variation frequencies
 
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+We can access the frequencies of each type of variation in the reported regions using the `frequencies`-method:
+```r
+head(frequencies(results))
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r echo=FALSE}
+knitr::kable(head(frequencies(results)))
 ```
 
-Also a quote using `>`:
+Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```r
+cbind(
+  head(regions(results)[,c("chr","start","end","pvalue")]),
+  head(frequencies(results)[,c(1,4)])
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(cbind(
+  head(regions(results)[,c("chr","start","end","pvalue")]),
+  head(frequencies(results)[,c(1,4)])
+))
+```
+
+## Accessing individual sample states
+
+We can access the states of the individual samples in the reported regions using the `states`-method.
+
+```r
+head(states(results)[,c(1:3,21:23)])
+```
+
+```{r echo=FALSE}
+knitr::kable(head(states(results)[,c(1:3,21:23)]))
+```
+
+Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`:
+
+```r
+cbind(
+  head(regions(results)[,c("chr","start","end","pvalue")]),
+  head(states(results)[,c(1:3,21:23)])
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(cbind(
+  head(regions(results)[,c("chr","start","end","pvalue")]),
+  head(states(results)[,c(1:3,21:23)])
+))
+```
