@@ -57,6 +57,8 @@
 #' @param name2 Name of second group.
 #' @param qvalues TRUE if q-values should be computed, FALSE otherwise.
 #' @param qvalues.rep Number of repetitions to use in q-value computation.
+#' @param merge TRUE if adjacent regions of same type should be merged.
+#' @param merge.threshold Maximum number of base pairs allowed between two regions in order to be adjacent.
 #' @param p.cutoff (statistical model) P-value cutoff in statistical model.
 #' @param pred1 (query model) Predicate for group 1 in query model.
 #' @param pred2 (query model) Predicate for group 2 in query model.

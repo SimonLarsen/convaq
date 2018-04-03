@@ -1,8 +1,9 @@
 #' Print description of CoNVaQ results object.
 #'
 #' @param x A convaq object.
+#' @param ... Further arguments passed to or from other methods.
 #' @export
-print.convaq <- function(x) {
+print.convaq <- function(x, ...) {
   cat("CoNVaQ results object.\n\n")
   cat("Model:               ", x$model, "\n")
   cat("Group 1 name:        ", x$name1, "\n")

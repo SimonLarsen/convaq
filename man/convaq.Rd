@@ -27,6 +27,10 @@ convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
 
 \item{qvalues.rep}{Number of repetitions to use in q-value computation.}
 
+\item{merge}{TRUE if adjacent regions of same type should be merged.}
+
+\item{merge.threshold}{Maximum number of base pairs allowed between two regions in order to be adjacent.}
+
 \item{p.cutoff}{(statistical model) P-value cutoff in statistical model.}
 
 \item{pred1}{(query model) Predicate for group 1 in query model.}

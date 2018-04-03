@@ -4,10 +4,12 @@
 \alias{print.convaq}
 \title{Print description of CoNVaQ results object.}
 \usage{
-\method{print}{convaq}(x)
+\method{print}{convaq}(x, ...)
 }
 \arguments{
 \item{x}{A convaq object.}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Print description of CoNVaQ results object.
