@@ -2,7 +2,7 @@
 % Please edit documentation in R/frequencies.R
 \name{frequencies}
 \alias{frequencies}
-\title{Extract variation frequencies for each region as a table.}
+\title{Extract variation frequencies for each region as a data frame.}
 \usage{
 frequencies(x, ...)
 }
@@ -12,5 +12,5 @@ frequencies(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Extract variation frequencies for each region as a table.
+Extract variation frequencies for each region as a data frame.
 }

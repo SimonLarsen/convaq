@@ -2,7 +2,7 @@
 % Please edit documentation in R/states.R
 \name{states}
 \alias{states}
-\title{Extract states of individual samples from CoNVaQ result as a table.}
+\title{Extract states of individual samples from CoNVaQ result as a data frame.}
 \usage{
 states(x, ...)
 }
@@ -12,5 +12,5 @@ states(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Extract states of individual samples from CoNVaQ result as a table.
+Extract states of individual samples from CoNVaQ result as a data frame.
 }

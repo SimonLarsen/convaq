@@ -2,7 +2,7 @@
 % Please edit documentation in R/regions.R
 \name{regions}
 \alias{regions}
-\title{Extract matching CNV regions from CoNVaQ result as a table.}
+\title{Extract matching CNV regions from CoNVaQ result as a data frame.}
 \usage{
 regions(x, ...)
 }
@@ -12,5 +12,5 @@ regions(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Extract matching CNV regions from CoNVaQ result as a table.
+Extract matching CNV regions from CoNVaQ result as a data frame.
 }
