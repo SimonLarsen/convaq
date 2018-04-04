@@ -85,7 +85,7 @@ convaq <- function(
   name1 = "Group 1",
   name2 = "Group 2",
   qvalues = FALSE,
-  qvalues.rep = 500,
+  qvalues.rep = 2000,
   merge = FALSE,
   merge.threshold = 0,
   p.cutoff = 0.05,
