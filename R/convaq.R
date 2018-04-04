@@ -214,6 +214,8 @@ convaq <- function(
   result$state <- out$state
   result$qvalues <- qvalues
   result$qvalues.rep <- qvalues.rep
+  result$merge <- merge
+  result$merge.threshold <- merge.threshold
   if(model.full == "statistical") {
     result$p.cutoff <- p.cutoff
   } else {
