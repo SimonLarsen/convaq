@@ -1,11 +1,11 @@
-#' Extract states of individual samples from CoNVaQ result as a table.
+#' Extract states of individual samples from CoNVaQ result as a data frame.
 #' 
 #' @param x A convaq object.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 states <- function(x, ...) UseMethod("states")
 
-#' Extract states of individual samples from CoNVaQ result as a table.
+#' Extract states of individual samples from CoNVaQ result as a data frame.
 #' 
 #' @param x A convaq object.
 #' @param ... Further arguments passed to or from other methods.

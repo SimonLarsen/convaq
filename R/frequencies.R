@@ -1,11 +1,11 @@
-#' Extract variation frequencies for each region as a table.
+#' Extract variation frequencies for each region as a data frame.
 #' 
 #' @param x A convaq object.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 frequencies <- function(x, ...) UseMethod("frequencies")
 
-#' Extract variation frequencies for each region as a table.
+#' Extract variation frequencies for each region as a data frame.
 #' 
 #' @param x A convaq object.
 #' @param ... Further arguments passed to or from other methods.
