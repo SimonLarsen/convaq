@@ -8,7 +8,7 @@
 \title{Perform CNV-based association study.}
 \usage{
 convaq(segments1, segments2, model, name1 = "Group 1", name2 = "Group 2",
-  qvalues = FALSE, qvalues.rep = 2000, merge = FALSE,
+  qvalues = FALSE, qvalues.rep = 4000, merge = FALSE,
   merge.threshold = 0, p.cutoff = 0.05, pred1 = NULL, pred2 = NULL,
   nthreads = NULL)
 }

@@ -15,5 +15,5 @@ states.convaq <- function(x, ...) {
     cbind(r1, r2)
   })
   
-  data.frame(do.call(rbind, rows))
+  data.frame(do.call(rbind, rows), check.names=FALSE)
 }
