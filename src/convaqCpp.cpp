@@ -90,7 +90,7 @@ List convaqCpp(
         // collect all group-patient pairs
         std::vector<std::pair<int,int>> all_patients;
         for(size_t group = 0; group < 2; ++group) {
-          for(int i = 0; i < npatients[group]; ++i) all_patients.emplace_back(0, i);
+          for(int i = 0; i < npatients[group]; ++i) all_patients.emplace_back(group, i);
         }
 
         std::random_device rd;
@@ -149,7 +149,7 @@ List convaqCpp(
     for(CNVR &r : results) {
       int better = 0;
       for(int l : best[r.type]) {
-        if(l > r.length) ++better;
+        if(l >= r.length) ++better;
       }
       r.qvalue = (double)better / qvalues_rep;
     }
