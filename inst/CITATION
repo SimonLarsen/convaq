@@ -1,0 +1,10 @@
+citHeader("To cite CoNVaQ in publications use:")
+
+citEntry(entry = "Article",
+  title        = "CoNVaQ: a web tool for copy number variation-based association studies",
+  author       = personList(as.person("Simon Jonas Larsen"), as.person("Luisa Matos do Canto"), as.person("Silvia Regina Rogatto"), as.person("Jan Baumbach")),
+  journal      = "BMC Genomics",
+  year         = "2018",
+
+  textVersion  = "Larsen SJ, do Canto LM, Rogatto SR, Baumbach J, (2018) CoNVaQ: a web tool for copy number variation-based association studies. BMC Genomics (In press)."
+)
