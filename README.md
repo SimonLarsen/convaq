@@ -12,10 +12,10 @@ CoNVaQ is also available as an online platform at [https://convaq.compbio.sdu.dk
 
 ## Installation
 
-You can install the latest development using devtools with:
+You can install the latest version using devtools with:
 
 ```R
-devtools::install_github("SimonLarsen/convaq")
+devtools::install_github("SimonLarsen/convaq@*release")
 ```
 
 ## License
