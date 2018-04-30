@@ -125,8 +125,10 @@ convaq <- function(
     stop("Invalid segment type(s): ", paste0(bad.types, collapse=", "))
   }
 
-  segments1$type <- as.numeric(as.factor(segments1$type))-1
-  segments2$type <- as.numeric(as.factor(segments2$type))-1
+  type1.old <- segments1$type
+  type2.old <- segments2$type
+  segments1$type <- as.numeric(factor(segments1$type, levels=types))-1
+  segments2$type <- as.numeric(factor(segments2$type, levels=types))-1
 
   # convert patients to numbers 0, 1, ...
   patients1 <- as.factor(segments1$patient)

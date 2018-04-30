@@ -1,10 +1,8 @@
 Package: convaq
 Type: Package
 Title: Perform CNV-based association studies
-Version: 0.1.0
-Authors@R: c(
-    person("Simon", "Larsen", email="simonhffh@gmail.com", role=c("aut","cre"))
-    )
+Version: 0.1.1
+Authors@R: c(person("Simon", "Larsen", email="simonhffh@gmail.com", role=c("aut","cre")))
 Author: Simon J. Larsen
 Maintainer: Simon J. Larsen <simonhffh@gmail.com>
 Description: CoNVaQ is a package for finding CNV-regions significantly associated to a disease or phenotype.

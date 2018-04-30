@@ -26,7 +26,10 @@ void get_regions_chr(
   get_events(segments1, chr, 0, events);
   get_events(segments2, chr, 1, events);
 
-  std::sort(events.begin(), events.end(), [](Event &a, Event &b) { return a.position < b.position; });
+  std::sort(events.begin(), events.end(), [](Event &a, Event &b) {
+    if(a.position == b.position && a.isStart != b.isStart) return b.isStart;
+    return a.position < b.position;
+  });
 
   std::vector<std::vector<std::vector<bool>>> states(2);
   for(size_t i = 0; i < 2; ++i) {
