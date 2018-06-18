@@ -1,3 +1,7 @@
+# convaq 0.1.3
+
+* Fixed compilation errors on Windows.
+
 # convaq 0.1.2
 
 * Updated citation details.
