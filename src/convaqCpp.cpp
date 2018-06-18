@@ -23,15 +23,15 @@ using namespace Rcpp;
 List convaqCpp(
     DataFrame df1,
     DataFrame df2,
-    uint model_num,
+    unsigned int model_num,
     bool qvalues,
-    uint qvalues_rep,
+    unsigned int qvalues_rep,
     bool merge,
-    uint merge_threshold,
+    unsigned int merge_threshold,
     double cutoff,
-    uint comp1, double value1, uint eq1, uint type1,
-    uint comp2, double value2, uint eq2, uint type2,
-    uint nthreads
+    unsigned int comp1, double value1, unsigned int eq1, unsigned int type1,
+    unsigned int comp2, double value2, unsigned int eq2, unsigned int type2,
+    unsigned int nthreads
 ) {
   if(nthreads == 0) nthreads = std::thread::hardware_concurrency();
 

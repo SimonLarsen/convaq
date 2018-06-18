@@ -2,7 +2,7 @@
 #include "merge.h"
 #include "CNVR.h"
 
-void merge_adjacent(std::vector<CNVR> &regions, uint threshold) {
+void merge_adjacent(std::vector<CNVR> &regions, unsigned int threshold) {
   std::sort(regions.begin(), regions.end(), [](const CNVR &a, const CNVR &b){
     if(a.type != b.type) return a.type < b.type;
     if(a.chr != b.chr) return a.chr < b.chr;

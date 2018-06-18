@@ -4,6 +4,6 @@
 #include <vector>
 #include "CNVR.h"
 
-void merge_adjacent(std::vector<CNVR> &regions, uint threshold);
+void merge_adjacent(std::vector<CNVR> &regions, unsigned int threshold);
 
 #endif

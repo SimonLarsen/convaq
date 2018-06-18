@@ -66,11 +66,11 @@ public:
     return(freq);
   }
   
-  std::vector<std::vector<uint>> get_state(size_t group) {
+  std::vector<std::vector<unsigned int>> get_state(size_t group) {
     size_t npatients = regions[0]->state[group][0].size();
-    std::vector<std::vector<uint>> state;
+    std::vector<std::vector<unsigned int>> state;
     for(size_t i = 0; i < npatients; ++i) {
-      std::set<uint> found;
+      std::set<unsigned int> found;
       for(const Region *r : regions) {
         bool is_normal = true;
         for(size_t type = 0; type < 3; ++type) {

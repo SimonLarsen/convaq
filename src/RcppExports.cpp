@@ -6,28 +6,28 @@
 using namespace Rcpp;
 
 // convaqCpp
-List convaqCpp(DataFrame df1, DataFrame df2, uint model_num, bool qvalues, uint qvalues_rep, bool merge, uint merge_threshold, double cutoff, uint comp1, double value1, uint eq1, uint type1, uint comp2, double value2, uint eq2, uint type2, uint nthreads);
+List convaqCpp(DataFrame df1, DataFrame df2, unsigned int model_num, bool qvalues, unsigned int qvalues_rep, bool merge, unsigned int merge_threshold, double cutoff, unsigned int comp1, double value1, unsigned int eq1, unsigned int type1, unsigned int comp2, double value2, unsigned int eq2, unsigned int type2, unsigned int nthreads);
 RcppExport SEXP _convaq_convaqCpp(SEXP df1SEXP, SEXP df2SEXP, SEXP model_numSEXP, SEXP qvaluesSEXP, SEXP qvalues_repSEXP, SEXP mergeSEXP, SEXP merge_thresholdSEXP, SEXP cutoffSEXP, SEXP comp1SEXP, SEXP value1SEXP, SEXP eq1SEXP, SEXP type1SEXP, SEXP comp2SEXP, SEXP value2SEXP, SEXP eq2SEXP, SEXP type2SEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type df1(df1SEXP);
     Rcpp::traits::input_parameter< DataFrame >::type df2(df2SEXP);
-    Rcpp::traits::input_parameter< uint >::type model_num(model_numSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type model_num(model_numSEXP);
     Rcpp::traits::input_parameter< bool >::type qvalues(qvaluesSEXP);
-    Rcpp::traits::input_parameter< uint >::type qvalues_rep(qvalues_repSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type qvalues_rep(qvalues_repSEXP);
     Rcpp::traits::input_parameter< bool >::type merge(mergeSEXP);
-    Rcpp::traits::input_parameter< uint >::type merge_threshold(merge_thresholdSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type merge_threshold(merge_thresholdSEXP);
     Rcpp::traits::input_parameter< double >::type cutoff(cutoffSEXP);
-    Rcpp::traits::input_parameter< uint >::type comp1(comp1SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type comp1(comp1SEXP);
     Rcpp::traits::input_parameter< double >::type value1(value1SEXP);
-    Rcpp::traits::input_parameter< uint >::type eq1(eq1SEXP);
-    Rcpp::traits::input_parameter< uint >::type type1(type1SEXP);
-    Rcpp::traits::input_parameter< uint >::type comp2(comp2SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type eq1(eq1SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type type1(type1SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type comp2(comp2SEXP);
     Rcpp::traits::input_parameter< double >::type value2(value2SEXP);
-    Rcpp::traits::input_parameter< uint >::type eq2(eq2SEXP);
-    Rcpp::traits::input_parameter< uint >::type type2(type2SEXP);
-    Rcpp::traits::input_parameter< uint >::type nthreads(nthreadsSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type eq2(eq2SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type type2(type2SEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type nthreads(nthreadsSEXP);
     rcpp_result_gen = Rcpp::wrap(convaqCpp(df1, df2, model_num, qvalues, qvalues_rep, merge, merge_threshold, cutoff, comp1, value1, eq1, type1, comp2, value2, eq2, type2, nthreads));
     return rcpp_result_gen;
 END_RCPP
