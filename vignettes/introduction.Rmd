@@ -18,10 +18,6 @@ knitr::opts_chunk$set(
 
 ```{r include=FALSE}
 library(convaq)
-data("example", package="convaq")
-results <- readRDS("results.rds")
-results2 <- readRDS("results2.rds")
-results3 <- readRDS("results3.rds")
 ```
 
 This vignette is a short introduction to the CoNVaQ R package. For a more detailed description of the functions in the CoNVaQ package and their arguments, we refer to the reference manual included with the package.
@@ -38,7 +34,7 @@ CoNVaQ takes as input two sets of segmented CNV calls, one for each group of pat
 
 You can load the included synthetic example data set like this:
 
-```r
+```{r}
 data("example", package="convaq")
 ```
 
@@ -53,7 +49,7 @@ head(example$healthy)
 
 The statistical models searches for CNV regions significantly associated to the patient stratification using Fisher's exact test. To use the statical model, we set the `model`-argument to "statistical". We set the `p.cutoff`-argument to 0.05 to only include regions with $p < 0.05$.
 
-```r
+```{r}
 library(convaq)
 results <- convaq(
   example$disease, example$healthy,
@@ -71,11 +67,7 @@ print(results)
 
 We see that CoNVaQ reports it found 59 statistically significant regions. Use the `regions`-method to obtain these regions.
 
-```r
-head(regions(results))
-```
-
-```{r echo=FALSE}
+```{r}
 knitr::kable(head(regions(results)))
 ```
 
@@ -84,7 +76,7 @@ Q-values are computed by repeatedly permutating the patient distributing among t
 
 Let's compute q-values using 2000 repetitions:
 
-```r
+```{r}
 results2 <- convaq(
   example$disease, example$healthy,
   model = "statistical",
@@ -93,10 +85,9 @@ results2 <- convaq(
   qvalues = TRUE,
   qvalues.rep = 2000
 )
-head(regions(results2))
 ```
 
-```{r echo=FALSE}
+```{r}
 res <- head(regions(results2))
 res$pvalue <- as.character(signif(res$pvalue, digits=3))
 res$qvalue <- as.character(signif(res$qvalue, digits=3))
@@ -136,7 +127,7 @@ Likewise if we are searching for regions where less than 25% of patients in a gr
 To use the query model we need to set the `model`-argument to "query" and specify the two predicates using the arguments `pred1` and `pred2`.
 Let us use the query model to search for regions where at least 50% of patients in the disease group have a gain in copy numbers, while at most 15% of patients in the healthy group do:
 
-```r
+```{r}
 results3 <- convaq(
   example$disease, example$healthy,
   model = "query",
@@ -145,34 +136,23 @@ results3 <- convaq(
   pred2 = "<= 0.15 == Gain",
   qvalues = TRUE, qvalues.rep = 2000
 )
-head(regions(results3))
 ```
 
-```{r echo=FALSE}
+```{r}
 knitr::kable(head(regions(results3)))
 ```
 
 ## Accessing variation frequencies
 
 We can access the frequencies of each type of variation in the reported regions using the `frequencies`-method:
-```r
-head(frequencies(results))
-```
 
-```{r echo=FALSE}
+```{r}
 knitr::kable(head(frequencies(results)))
 ```
 
 Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`:
 
-```r
-cbind(
-  head(regions(results)[,c("chr","start","end","pvalue")]),
-  head(frequencies(results)[,c(1,4)])
-)
-```
-
-```{r echo=FALSE}
+```{r}
 knitr::kable(cbind(
   head(regions(results)[,c("chr","start","end","pvalue")]),
   head(frequencies(results)[,c(1,4)])
@@ -183,24 +163,13 @@ knitr::kable(cbind(
 
 We can access the states of the individual samples in the reported regions using the `states`-method.
 
-```r
-head(states(results)[,c(1:3,21:23)])
-```
-
-```{r echo=FALSE}
+```{r}
 knitr::kable(head(states(results)[,c(1:3,21:23)]))
 ```
 
 Each row corresponds to the same row in the table returned by the `regions`-method. To get a better overview, we can combine the two tables with `cbind`: (only six samples shown here)
 
-```r
-cbind(
-  head(regions(results)[,c("chr","start","end","pvalue")]),
-  head(states(results)[,c(1:3,21:23)])
-)
-```
-
-```{r echo=FALSE}
+```{r}
 knitr::kable(cbind(
   head(regions(results)[,c("chr","start","end","pvalue")]),
   head(states(results)[,c(1:3,21:23)])
