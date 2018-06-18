@@ -1,7 +1,7 @@
 Package: convaq
 Type: Package
 Title: Perform CNV-based association studies
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(person("Simon", "Larsen", email="simonhffh@gmail.com", role=c("aut","cre")))
 Author: Simon J. Larsen
 Maintainer: Simon J. Larsen <simonhffh@gmail.com>

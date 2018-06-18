@@ -26,4 +26,4 @@ CoNVaQ is licensed under an MIT license. See the [LICENSE](LICENSE) file for det
 
 If you use CoNVaQ in your research, we kindly ask you to cite the following publication:
 
-> Larsen SJ, do Canto LM, Rogatto SR, Baumbach J (2018). CoNVaQ: a web tool for copy number variation-based association studies. BMC Genomics. (In press)
+> Simon Jonas Larsen, Luisa Matos do Canto, Silvia Regina Rogatto, Jan Baumbach (2018). CoNVaQ: a web tool for copy number variation-based association studies BMC Genomics, 19(1), 369. DOI: https://doi.org/10.1186/s12864-018-4732-8.
